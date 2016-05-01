@@ -7,7 +7,9 @@ PLUGINDIR	:= ${STGAMEDATA}/Plugins
 TARGETS		:= SurveyTransponder.dll
 
 ST_FILES := \
-    AssemblyInfo.cs	\
+	AllowWater.cs \
+	AssemblyInfo.cs	\
+	RenameWindow.cs \
 	Transponder.cs \
 	Tracker.cs \
 	VersionReport.cs \

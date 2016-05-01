@@ -31,6 +31,9 @@ namespace SurveyTransponder {
 		[KSPField(isPersistant = true)]
 		public bool deployed;
 
+		[KSPField(isPersistant = true)]
+		public string transponderName;
+
 		[KSPField (isPersistant = false)]
 		public string deployAnimation;
 
@@ -133,6 +136,9 @@ namespace SurveyTransponder {
 				Anim[deployAnimation].speed = 1;
 				Anim[deployAnimation].enabled = true;
 				Anim.Play (deployAnimation);
+				if (!string.IsNullOrEmpty (transponderName)) {
+					vessel.vesselName = transponderName;
+				}
 			}
 		}
 
@@ -154,12 +160,40 @@ namespace SurveyTransponder {
 
 		void OnDestroy ()
 		{
-			if (FlightGlobals.fetch.VesselTarget == (ITargetable) this) {
+			Disable ();
+		}
+
+		public void SetName (string name)
+		{
+			transponderName = name;
+			if (deployed && !string.IsNullOrEmpty (transponderName)) {
+				vessel.vesselName = transponderName;
+			}
+		}
+
+		[KSPEvent (guiActive = true, guiActiveEditor = true,
+				   guiName = "Rename Transponder", active = true,
+				   externalToEVAOnly = true, guiActiveUnfocused = true,
+				   unfocusedRange = 2)]
+		public void ShowRenameUI ()
+		{
+			ST_RenameWindow.ShowGUI (this);
+		}
+
+		[KSPEvent (guiActive = true, guiActiveEditor = false,
+				   guiName = "Disable Transponder", active = true,
+				   externalToEVAOnly = true, guiActiveUnfocused = true,
+				   unfocusedRange = 2)]
+		public void Disable ()
+		{
+			if (FlightGlobals.fetch != null &&
+				FlightGlobals.fetch.VesselTarget == (ITargetable) this) {
 				FlightGlobals.fetch.SetVesselTarget (null);
 			}
 			if (ST_Tracker.instance != null) {
 				ST_Tracker.instance.RemoveTransponder (this);
 			}
+			Events["Disable"].active = false;
 		}
 	}
 }
