@@ -10,6 +10,7 @@ ST_FILES := \
 	AllowWater.cs \
 	AssemblyInfo.cs	\
 	RenameWindow.cs \
+	StagedAnimation.cs \
 	Transponder.cs \
 	Tracker.cs \
 	VersionReport.cs \
@@ -23,7 +24,7 @@ DOC_FILES := \
 #	README.md
 
 RESGEN2		:= resgen2
-GMCS		:= gmcs
+GMCS		:= mcs
 GMCSFLAGS	:= -optimize -warnaserror
 GIT			:= git
 TAR			:= tar
@@ -47,7 +48,9 @@ info:
 
 SurveyTransponder.dll: ${ST_FILES}
 	${GMCS} ${GMCSFLAGS} -t:library -lib:${MANAGED} \
-		-r:Assembly-CSharp,Assembly-CSharp-firstpass,UnityEngine \
+		-r:Assembly-CSharp,Assembly-CSharp-firstpass \
+		-r:UnityEngine,UnityEngine.UI \
+		-r:KSPUtil \
 		-out:$@ $^
 
 #SurveyTransponder.png: SurveyTransponder.svg
